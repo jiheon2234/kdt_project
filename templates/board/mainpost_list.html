@@ -1,0 +1,12 @@
+<h1>대충 게시판</h1>
+<a href="{% url 'board:create' %}">글쓰기</a>
+{% if mainpost_list %}
+    <ul>
+    {% for mainpost in mainpost_list %}
+        <li><a href="{% url 'board:detail' mainpost.id %}">{{ mainpost.title }}{{ mainpost.created_date }}</a></li>
+    {% endfor %}
+    </ul>
+
+{% else %}
+    <p>질문이 없습니다.</p>
+{% endif %}
