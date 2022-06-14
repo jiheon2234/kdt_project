@@ -1,12 +1,39 @@
-<h1>대충 게시판</h1>
-<a href="{% url 'board:create' %}">글쓰기</a>
-{% if mainpost_list %}
-    <ul>
-    {% for mainpost in mainpost_list %}
-        <li><a href="{% url 'board:detail' mainpost.id %}">{{ mainpost.title }}{{ mainpost.created_date }}</a></li>
-    {% endfor %}
-    </ul>
+{% extends 'base.html' %}
+ {% block content %}
+<div class="container my-3">
 
-{% else %}
-    <p>질문이 없습니다.</p>
-{% endif %}
+  <h1>대충 게시판</h1>
+  <div class="col-6">
+    <a href="{% url 'board:create' %}" class="btn btn-dark">글쓰기</a>
+  </div>
+  <table class="table">
+    <thead>
+    <tr class="table-primary ">
+        <th>번호</th>
+        <th style="width: 50%">제목</th>
+        <th>작성자</th>
+        <th>
+          작성시간
+          </th>
+    </tr>
+    </thead>
+    <tbody>
+    
+    {% for mainpost in mainpost_list %}
+    <tr class="">
+        <td>{{ forloop.counter }}</td>
+        <td>
+            <a href="{% url 'board:detail' mainpost.id %}">{{ mainpost.title }}</a>
+        </td>
+        <td>{{ mainpost.author }}</td>
+        <td>{{ mainpost.created_date }}</td>
+    </tr>
+    {% endfor %}
+ 
+    
+    </tbody>
+</table>
+
+</div>
+
+{% endblock %}
