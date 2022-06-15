@@ -1,5 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from common.forms import UserForm
 
 # Create your views here.
@@ -24,3 +26,17 @@ def signup(request):
     else:
         form = UserForm()
     return render(request, 'common/signup.html', {'form': form})
+
+def id_check(request):
+    try:
+        user=User.objects.get(username=request.GET['username'])
+       
+    except:
+        user=None
+    result={
+        'result':'success',
+        'data': 'exist' if user else 'not exist'
+    }
+    
+    return JsonResponse(result)
+    

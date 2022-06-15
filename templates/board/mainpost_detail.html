@@ -1,27 +1,22 @@
-{% extends 'base.html' %}
-{% block title %} 글 상세보기 {% endblock %}
+{% extends 'base.html' %} {% block title %} 글 상세보기 {% endblock %} 
 {% block content %}
 <div class="container my-3">
-<h1>제목:{{ mainpost.title }}</h1>
-<div>
-    본문:{{ mainpost.text }}
-    작성자:{{ mainpost.author }}
-</div>
+  <h2 class="card my-3">제목:{{ mainpost.title }}</h2>
+  <h3 class="card my-3">
+    <p>
+      작성자:<strong>{{ mainpost.author }}</strong>작성시간 {{ mainpost.created_date }}
+    </p>
+  </h3>
 
-<form action="{% url 'board:comment_create' mainpost.id %}", method="post">
-    {% csrf_token %}
-    <textarea class="form-control" name="text" id="text" rows="2" placeholder="Leave a comment here"> </textarea>
-        <input type="submit" value="댓글달기">
-</form>
-   댓글: {{ mainpost.comment_set.count }}
-   
-   <ul>
-    {% for comment in mainpost.comment_set.all %}
-        <li>{{ comment.text }} 작성자:{{ comment.author }} {{ comment.created_date }}</li>
-    {% endfor %}
-    </ul>
-   
+  <div class="card my-3">
+    <div class="card-text">{{ mainpost.text|linebreaksbr }}</div>
+    <div class="my-3">
+    <a href="#" class="btn btn-sm btn-outline-secondary">수정</a>
+    <a href="#" class="btn btn-sm btn-danger btn-outline-secondary" style="color:white;">삭제</a>
+</div>
+  </div>
+
+  <!--댓글-->
+  
 </div>
 {% endblock %}
-   
-

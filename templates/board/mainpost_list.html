@@ -21,19 +21,59 @@
     
     {% for mainpost in mainpost_list %}
     <tr class="">
-        <td>{{ forloop.counter }}</td>
+        <!-- <td>{{ forloop.counter }}</td> -->
+        <td>{{ mainpost.id }}</td>
         <td>
             <a href="{% url 'board:detail' mainpost.id %}">{{ mainpost.title }}</a>
+            {% if mainpost.comment_set.count > 0 %}
+            <span class="text-danger small mx-2">댓글:{{ mainpost.comment_set.count }}</span>
+            {% endif %}
         </td>
         <td>{{ mainpost.author }}</td>
         <td>{{ mainpost.created_date }}</td>
     </tr>
     {% endfor %}
- 
-    
-    </tbody>
+  </tbody>
 </table>
+    
 
+    <ul class="pagination justify-content-center">
+      <!--이전-->
+      {% if mainpost_list.has_previous %} <!--다음 페이지가 있다면-->
+     <li class="page-item">
+      <a class="page-link" href="?page={{ mainpost_list.previous_page_number }}">이전</a>
+     </li>
+     {% else %}
+     <li class="page-item-disabled" >
+      <a class="page-link" style="background-color: #E2E2E2;">이전</a>
+     </li>
+     {% endif %}
+
+     <!--리스트-->
+     {% for page_number in mainpost_list.paginator.page_range %}
+     {% if page_number >= mainpost_list.number|add:-5 and page_number <= mainpost_list.number|add:5 %}
+     {% if page_number == mainpost_list.number %}
+     <li class="page-item active" aria-current="page">
+      <a class="page-link"  href="?page={{ page_number }}">{{ page_number }}</a>
+     </li>
+     {% else %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+        </li>
+        {% endif %}
+      {% endif %}
+      {% endfor %}
+        <!-- 다음 -->
+        {% if mainpost_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ mainpost_list.next_page_number }}">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" style="background-color: #E2E2E2;"tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
 </div>
 
 {% endblock %}

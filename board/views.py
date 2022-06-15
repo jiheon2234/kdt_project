@@ -3,13 +3,24 @@ from django.shortcuts import redirect, render,get_object_or_404
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 # from django.http import HttpResponse
 # Create your views here.
 
+# def index(request): #글 목록페이지
+#     mainpost_list= Mainpost.objects.order_by('-created_date')
+
+#     context={'mainpost_list':mainpost_list}
+#     return render(request,'board/mainpost_list.html',context)
+
 def index(request): #글 목록페이지
+    page=request.GET.get('page','1')
     mainpost_list= Mainpost.objects.order_by('-created_date')
-    print(1234)
-    context={'mainpost_list':mainpost_list}
+    paginator=Paginator(mainpost_list,10)
+
+    page_obj=paginator.get_page(page)
+
+    context={'mainpost_list':page_obj, 'page':page}
     return render(request,'board/mainpost_list.html',context)
 
 def detail(request, mainpost_id): #글 상세페이지
