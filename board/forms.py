@@ -12,3 +12,12 @@ class MainpostForm(forms.ModelForm):
             'title':'제목',
             'text':'내용',
         }
+
+class CommentForm(forms.ModelForm):
+    class meta:
+        model=Comment
+        field=['text']
+        labels={
+            
+            'text':'내용'
+        }

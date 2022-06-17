@@ -1,22 +1,53 @@
-{% extends 'base.html' %} {% block title %} 글 상세보기 {% endblock %} 
-{% block content %}
+{% extends 'base.html' %} {% block title %} 글 상세보기 {% endblock %} {% block content %}
+
 <div class="container my-3">
-  <h2 class="card my-3">제목:{{ mainpost.title }}</h2>
-  <h3 class="card my-3">
-    <p>
-      작성자:<strong>{{ mainpost.author }}</strong>작성시간 {{ mainpost.created_date }}
-    </p>
-  </h3>
-
   <div class="card my-3">
-    <div class="card-text">{{ mainpost.text|linebreaksbr }}</div>
-    <div class="my-3">
-    <a href="#" class="btn btn-sm btn-outline-secondary">수정</a>
-    <a href="#" class="btn btn-sm btn-danger btn-outline-secondary" style="color:white;">삭제</a>
-</div>
-  </div>
+    <p class="fs-4"><span class="material-icons">person </span>{{ mainpost.author }} <span class="material-icons fs-5"> history </span> {{ mainpost.created_date }}</p>
 
-  <!--댓글-->
-  
+
+    <div class="card-text">
+      <p class="fs-1 fw-bold">{{ mainpost.title }}</p>
+      <p>{{ mainpost.text|linebreaksbr }}</p>
+    </div>
+    <div class="fs-6 m-0">
+      <span class="material-icons fs-6 text-danger"> thumb_up_alt </span>
+      <span class="text-danger">0</span>
+      <span class="material-icons fs-6"> comment </span>
+      <span>{{ mainpost.comment_set.count }}</span>
+    </div>
+    <div class="my-3">
+      {% if request.user == mainpost.author %}
+      <a href="{% url 'board:mainpost_modify' mainpost.id %}" class="btn btn-sm btn-outline-secondary">수정</a>
+      <a href="{% url 'board:mainpost_delete' mainpost.id %}" class="btn btn-sm btn-danger btn-outline-secondary" style="color: white">삭제</a>
+      {% endif %}
+    </div>
+
+    <div class=" my-3 mb-0">
+      <form method="post" action="{% url 'board:comment_create' mainpost.id %}" class="my-3">
+        {% csrf_token %} {% include 'form_errors.html' %}
+     
+          <textarea name="text" class="form-control md-9" rows="2" {% if not user.is_authenticated %} disabled placeholder="로그인 후 이용 가능" {% else %} placeholder="댓글을 입력해주세요!" {% endif %}></textarea>
+          
+     
+        <input type="submit" class="btn btn-primary justify-content-end" value="등록" />
+      </form>
+    </div>
+
+    <div class="card my-3 m-0">
+    {% for comment in mainpost.comment_set.all %}
+    
+      <div class="card">
+        <div class="card-text">
+          <p class="fs-4"><span class="material-icons">person </span>{{ comment.author }} <span class="material-icons fs-5"> history </span> {{ comment.created_date }}</p>
+
+          <p>{{ comment.text }}</p>
+        </div>
+      </div>
+    
+
+    {% endfor %}
+  </div>
+  </div>
 </div>
-{% endblock %}
+{% endblock %} 
+{% block script %} {% endblock %}

@@ -1,4 +1,4 @@
-from multiprocessing import context
+from django.contrib import messages
 from django.shortcuts import redirect, render,get_object_or_404
 from .models import *
 from .forms import *
@@ -42,11 +42,42 @@ def mainpost_create(request):  #글쓰기
         form=MainpostForm()
     return render(request,'board/mainpost_form.html',{'form':form})
 
+@login_required
+def mainpost_delete(request,mainpost_id):
+    mainpost=get_object_or_404(Mainpost,pk=mainpost_id)
+    if request.user != mainpost.author:
+        messages.error(request,'작성자가아닙니다')
+        return redirect('board:detail',mainpost_id=mainpost.id)
+    mainpost.delete()
+    return redirect('board:index')
+
+@login_required
+def mainpost_modify(request,mainpost_id):
+    mainpost=get_object_or_404(Mainpost,pk=mainpost_id)
+    if request.user != mainpost.author:
+        messages.error(request, '작성자가 아닙니다')
+        return redirect('board:detail',mainpost_id=mainpost.id)
+    if request.method=='POST':
+        form =MainpostForm(request.POST, instance=mainpost)
+        if form.is_valid():
+            mainpost=form.save(commit=False)
+            mainpost.save()
+            return redirect('board:detail',mainpost_id=mainpost.id)
+    else:
+        form=MainpostForm(instance=mainpost)
+    context={'form':form}
+    return render(request,'board/mainpost_form.html',context)
+
+
+
 @login_required(login_url='common:login')
 def comment_create(request,mainpost_id):
     if request.method=='POST':
         mainpost=get_object_or_404(Mainpost,pk=mainpost_id)
         mainpost.comment_set.create(text=request.POST.get('text'),created_date=timezone.now(),author=request.user)
         return redirect('board:detail',mainpost_id=mainpost.id)
+
+
+
 
 
